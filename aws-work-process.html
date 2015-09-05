@@ -1,0 +1,176 @@
+<!--
+@license
+Copyright (c) 2015 dean wagner wagner@nmb.gov. All rights reserved.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../firebase-element/firebase-collection.html">
+<link rel="import" href="../iron-selector/iron-selector.html">
+<!-- <link rel="import" href="../bower_components/firebase-element/firebase-document.html"> -->
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <aws-work-process></aws-work-process>
+
+@demo
+-->
+<dom-module id="aws-work-process">
+
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+    .iron-selected {
+      background: #eee;
+    }
+
+    iron-selector > div:hover {
+      background-color: #ddd;
+    }
+
+    .width200 {
+      width:200px;
+    }
+
+  </style>
+
+  <template>
+
+    <firebase-collection
+        location="{{_arbmonthsUrl}}"
+        data="{{_arbmonths}}">
+    </firebase-collection>
+
+
+    <h2>{{_selectedArbmonth}}</h2>
+
+    <iron-selector selected="{{_selectedArbmonth}}" attr-for-selected="caseid">
+      <template is="dom-repeat" items="{{_arbmonths}}">
+        <div caseid="{{item.__firebaseKey__}}">
+          Month ID:&nbsp;
+          <span class="width200">{{_computeDisplayDate(item.__firebaseKey__)}}</span>
+        </div>
+      </template>
+    </iron-selector>
+
+
+  </template>
+
+</dom-module>
+
+<script>
+
+  Polymer({
+
+    is: 'aws-work-process',
+
+    properties: {
+      
+
+      /**
+       * Database url for the firebase-collection connection to get assignment objects.
+       *
+       * @type String
+       */
+      fbUrl: {
+        type: String,
+        observer: '_alertFB'
+      },
+      /**
+       * uid of the user used a a key for the user node
+       *
+       * @type String
+       */
+      userUid: {
+        type: String,
+        observer: '_alertUID'
+      },
+
+      _arbmonths: {
+        type: Array,
+        value: function () {return [];}
+      },
+      _arbmonthsUrl: String,
+      // _selectedArbmonth: {
+      //   type: Number,
+      //   value: 3
+      // }
+      // _selectedArbmonth: {
+      //   type: Object,
+      //   observer: 'ckmonth'
+      // }
+      _selectedArbmonth: {
+        type: String,
+        observer: 'ckmonth'
+      }, 
+
+      _months: {
+        type: Array,
+        value: function () {
+          return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        }
+      }
+
+    },
+
+    _alertFB: function(newValue, oldValue) {
+      console.log("FB = " + this.fbUrl);
+    },
+
+    _alertUID: function (newValue, oldValue) {
+      console.log("UID = " + this.userUid);
+    },
+
+    ckmonth: function () {
+      //alert("yo");
+    },
+
+
+    observers: [
+      'updateUrls(fbUrl, userUid)'
+    ],
+
+    updateUrls: function(fbUrl, userUid) {
+      console.log("in updateUrls");
+      this._assembleUrls();
+    },
+
+
+    // Element Lifecycle
+    ready: function () {
+      console.log("in ready");
+    },
+
+    attached: function () {
+      console.log("in attached");
+    },
+
+    detached: function () {
+      console.log("in detached");
+    },
+
+    _assembleUrls: function () {
+      this._arbmonthsUrl = this.fbUrl + "/users/" + this.userUid + "/arbmonths";
+      console.log("in assembleUrls, 2 " + this._arbmonthsUrl);
+    },
+
+
+    
+    // Element Behavior
+
+    //arbmonth list
+
+    _computeDisplayDate: function (caseID) {
+      alert("in _computeDisplayDate(item.caseID), " + caseID);
+      var splt= caseID.split('-');
+      var dateindex = parseInt(splt[1]) - 1;
+      return this._months[dateindex] + ", " + splt[0];
+    }
+
+
+  });
+
+</script>
