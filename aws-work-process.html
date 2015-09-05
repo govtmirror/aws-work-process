@@ -5,6 +5,9 @@ Copyright (c) 2015 dean wagner wagner@nmb.gov. All rights reserved.
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../firebase-element/firebase-collection.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <!-- <link rel="import" href="../bower_components/firebase-element/firebase-document.html"> -->
 
 <!--
@@ -22,9 +25,18 @@ Example:
     :host {
       display: block;
       box-sizing: border-box;
+      border-radius: 5px;
+      margin: 5px;
+      padding: 10px;
+      background-color: gray;
+      color: white;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      font-size: 16px;
     }
+
     .iron-selected {
-      background: #eee;
+      background-color: #eee;
+      color: black;
     }
 
     iron-selector > div:hover {
@@ -32,8 +44,20 @@ Example:
     }
 
     .width200 {
-      width:200px;
+      width:150px;
+
     }
+
+    .red {
+      color: red;
+      background-color: #ffaaaa;
+    }
+
+    #arblist {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+    }
+
 
   </style>
 
@@ -45,15 +69,49 @@ Example:
     </firebase-collection>
 
 
-    <h2>{{_selectedArbmonth}}</h2>
+    <h2>{{_computeDisplayDate(_selectedArbmonth)}}</h2>
 
     <iron-selector selected="{{_selectedArbmonth}}" attr-for-selected="caseid">
-      <template is="dom-repeat" items="{{_arbmonths}}">
-        <div caseid="{{item.__firebaseKey__}}">
-          Month ID:&nbsp;
-          <span class="width200">{{_computeDisplayDate(item.__firebaseKey__)}}</span>
-        </div>
-      </template>
+
+        <template is="dom-repeat" items="{{_arbmonths}}">
+        <div caseid="{{item.__firebaseKey__}}" id="arblist">
+            <span class="width200">{{_computeDisplayDate(item.__firebaseKey__)}}</span>
+
+            
+            <paper-icon-button 
+                title="still editing a work request"
+                icon="create" 
+                class$="{{_pendreqClass(item.stat)}}">
+            </paper-icon-button>
+            <paper-icon-button 
+                title="request submitted, staff reviewing"
+                icon="assignment-turned-in" 
+                class$="{{_subreqClass(item.stat)}}">
+            </paper-icon-button>
+            <paper-icon-button 
+                title="waiting director approval"
+                icon="done-all" 
+                class$="{{_subreqClass(item.stat)}}">
+            </paper-icon-button>
+            <paper-icon-button 
+                title="open for work reporting"
+                icon="work" 
+                class$="{{_valreqClass(item.stat)}}">
+            </paper-icon-button>
+            <paper-icon-button 
+                title="report submitted, staff reviewing"
+                icon="assignment-turned-in" 
+                class$="{{_reqappClass(item.stat)}}">
+            </paper-icon-button>
+            <paper-icon-button 
+                title="report waiting for director approval"
+                icon="done-all" 
+                class$="{{_subrptClass(item.stat)}}">
+            </paper-icon-button>
+
+          </div>
+        </template>
+
     </iron-selector>
 
 
@@ -164,10 +222,55 @@ Example:
     //arbmonth list
 
     _computeDisplayDate: function (caseID) {
-      alert("in _computeDisplayDate(item.caseID), " + caseID);
+      // alert("in _computeDisplayDate(item.caseID), " + caseID);
       var splt= caseID.split('-');
       var dateindex = parseInt(splt[1]) - 1;
       return this._months[dateindex] + ", " + splt[0];
+    },
+
+    _pendreqClass: function (stat) {
+      if (stat == "PENDING_REQ") {
+        return "red"
+      } else {
+        return "grey"
+      }
+    },
+
+    _subreqClass: function (stat) {
+      if (stat == "SUBMITTED_REQ") {
+        return "red"
+      } else {
+        return "grey"
+      }
+    },
+
+    _valreqClass: function (stat) {
+      if (stat == "VALID_REQ") {
+        return "red"
+      } else {
+        return "grey"
+      }
+    },
+    _reqappClass: function (stat) {
+      if (stat == "REQ_APPROVED") {
+        return "red"
+      } else {
+        return "grey"
+      }
+    },
+    _subrptClass: function (stat) {
+      if (stat == "SUBMITTED_RPT") {
+        return "red"
+      } else {
+        return "grey"
+      }
+    },
+    _valrptClass: function (stat) {
+      if (stat == "VALID_RPT") {
+        return "red"
+      } else {
+        return "grey"
+      }
     }
 
 
