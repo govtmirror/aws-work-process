@@ -86,12 +86,16 @@ Example:
       <div class="pageheader graycontainer">
 
         <h1>{{_computeDisplayDate(_selectedArbmonth)}}</h1>
+        <h1>{{_selectedarbmonth.arbMonthID}}</h1>
 
       </div> <!-- end of pageheader -->
 
       <div class="pagebody graycontainer">
 
-        <iron-selector selected="{{_selectedArbmonth}}" attr-for-selected="caseid">
+        <iron-selector 
+            selected="{{_selectedArbmonth}}" 
+            attr-for-selected="caseid"
+            selectedItem="{{_selectedarbmonth}}">
 
             <template is="dom-repeat" items="{{_arbmonths}}">
             <div caseid="{{item.__firebaseKey__}}" id="arblist">
@@ -234,7 +238,8 @@ Example:
         value: function () {
           return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         }
-      }
+      },
+
 
     },
 
