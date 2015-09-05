@@ -4,6 +4,7 @@ Copyright (c) 2015 dean wagner wagner@nmb.gov. All rights reserved.
 -->
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../firebase-element/firebase-collection.html">
+<link rel="import" href="../firebase-element/firebase-document.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
@@ -80,13 +81,18 @@ Example:
         location="{{_arbmonthsUrl}}"
         data="{{_arbmonths}}">
     </firebase-collection>
+    <firebase-document
+        location="{{_monthUrl}}"
+        data="{{_arbmonth}}">
+    </firebase-document>
+
 
     <div class="wholepage">
 
       <div class="pageheader graycontainer">
 
         <h1>{{_computeDisplayDate(_selectedArbmonth)}}</h1>
-        <h1>{{_selectedarbmonth.arbMonthID}}</h1>
+        <h1>{{_arbmonth.arbMonthID}}</h1>
 
       </div> <!-- end of pageheader -->
 
@@ -94,8 +100,7 @@ Example:
 
         <iron-selector 
             selected="{{_selectedArbmonth}}" 
-            attr-for-selected="caseid"
-            selectedItem="{{_selectedarbmonth}}">
+            attr-for-selected="caseid">
 
             <template is="dom-repeat" items="{{_arbmonths}}">
             <div caseid="{{item.__firebaseKey__}}" id="arblist">
@@ -141,13 +146,39 @@ Example:
           <div class="layout horizontal wrap">
 
             <div>
-              <h3>&nbsp;&nbsp;Request for:&nbsp;<span>{{selectedArbmonth}}</span></h3>
+              <h3>&nbsp;&nbsp;Request for:&nbsp;<span>{{_selectedArbmonth}}</span></h3>
               <table>
-                <tr><td>Total Case Fees</td><td class="width100right">$<span>{{arbmonth.totalfees}}</span></td></tr>
-                <tr><td>Hearing Fees</td><td class="width100right">$<span>{{arbmonth.totalhfees}}</span></td></tr>
-                <tr><td>Requested Travel Expense</td><td class="width100right">$<span>{{arbmonth.travel_exp}}</span></td></tr>
-                <tr><td>Requested Lodging</td><td class="width100right">$<span>{{arbmonth.lodging_exp}}</span></td></tr>
-                <tr><td>Requested Incidentals</td><td class="width100right">$<span>{{arbmonth.incidental_exp}}</span></td></tr>
+                <tr><th></th><th>Request</th><th>Approved</th><th>Actual</th></tr>
+                <tr>
+                  <td>Total Case Fees</td>
+                  <td class="width75right">$<span>{{_arbmonth.totalfees}}</span></td>
+                  <td class="width75right">$<span>{{_arbmonth.totalfees_app}}</span></td>
+                  <td class="width75right">$<span>{{_arbmonth.totalfees_act}}</span></td>
+                </tr>
+                <tr>
+                  <td>Hearing Fees</td>
+                  <td class="width75right">$<span>{{_arbmonth.totalhfees}}</td>
+                  <td class="width75right">$<span>{{_arbmonth.totalhfees_app}}</span></td>
+                  <td class="width75right">$<span>{{_arbmonth.totalhfees_act}}</span></td>
+                </tr>
+                <tr>
+                  <td>Travel Expense</td>
+                  <td class="width75right">$<span>{{_arbmonth.travel_exp}}</span></td>
+                  <td class="width75right">$<span>{{_arbmonth.travel_app}}</span></td>
+                  <!-- <td class="width75right">$<span>{{arbmonth.travel_act}}</span></td> -->
+                </tr>
+                <tr>
+                  <td>Lodging</td>
+                  <td class="width75right">$<span>{{_arbmonth.lodging_exp}}</span></td>
+                  <td class="width75right">$<span>{{_arbmonth.lodging_app}}</span></td>
+                  <!-- <td class="width75right">$<span>{{arbmonth.lodging_act}}</span></td> -->
+                </tr>
+                <tr>
+                  <td>Requested Incidentals</td>
+                  <td class="width75right">$<span>{{_arbmonth.incidental_exp}}</span></td>
+                  <td class="width75right">$<span>{{_arbmonth.incidental_app}}</span></td>
+                  <!-- <td class="width75right">$<span>{{arbmonth.incidental_act}}</span></td> -->
+                </tr>
               </table>
             </div>
             <div class="flex"></div>
@@ -219,18 +250,12 @@ Example:
         type: Array,
         value: function () {return [];}
       },
+
       _arbmonthsUrl: String,
-      // _selectedArbmonth: {
-      //   type: Number,
-      //   value: 3
-      // }
-      // _selectedArbmonth: {
-      //   type: Object,
-      //   observer: 'ckmonth'
-      // }
+
       _selectedArbmonth: {
         type: String,
-        observer: 'ckmonth'
+        observer: '_selectarbmonthChg'
       }, 
 
       _months: {
@@ -239,6 +264,9 @@ Example:
           return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         }
       },
+
+      _monthUrl: String,
+      _arbmonth: Object
 
 
     },
@@ -251,9 +279,7 @@ Example:
       console.log("UID = " + this.userUid);
     },
 
-    ckmonth: function () {
-      //alert("yo");
-    },
+
 
 
     observers: [
@@ -264,6 +290,13 @@ Example:
       console.log("in updateUrls");
       this._assembleUrls();
     },
+
+    _selectarbmonthChg: function(ab) {
+      console.log("in goc damn function");
+      this._monthUrl = this._arbmonthsUrl + "/" + this._selectedArbmonth
+      console.log("in goc damn function 2 " + this._monthUrl);
+    },
+
 
 
     // Element Lifecycle
