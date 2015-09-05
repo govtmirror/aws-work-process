@@ -25,6 +25,9 @@ Example:
     :host {
       display: block;
       box-sizing: border-box;
+    }
+
+    .graycontainer {
       border-radius: 5px;
       margin: 5px;
       padding: 10px;
@@ -58,6 +61,16 @@ Example:
       @apply(--layout-center);
     }
 
+    .wholepage {
+      @apply(--layout-vertical);
+    }
+
+
+    .pagebody {
+      @apply(--layout-horizontal);
+      @apply(--layout-top);
+    }
+
 
   </style>
 
@@ -68,53 +81,104 @@ Example:
         data="{{_arbmonths}}">
     </firebase-collection>
 
+    <div class="wholepage">
 
-    <h2>{{_computeDisplayDate(_selectedArbmonth)}}</h2>
+      <div class="pageheader graycontainer">
 
-    <iron-selector selected="{{_selectedArbmonth}}" attr-for-selected="caseid">
+        <h1>{{_computeDisplayDate(_selectedArbmonth)}}</h1>
 
-        <template is="dom-repeat" items="{{_arbmonths}}">
-        <div caseid="{{item.__firebaseKey__}}" id="arblist">
-            <span class="width200">{{_computeDisplayDate(item.__firebaseKey__)}}</span>
+      </div> <!-- end of pageheader -->
 
-            
-            <paper-icon-button 
-                title="still editing a work request"
-                icon="create" 
-                class$="{{_pendreqClass(item.stat)}}">
-            </paper-icon-button>
-            <paper-icon-button 
-                title="request submitted, staff reviewing"
-                icon="assignment-turned-in" 
-                class$="{{_subreqClass(item.stat)}}">
-            </paper-icon-button>
-            <paper-icon-button 
-                title="waiting director approval"
-                icon="done-all" 
-                class$="{{_subreqClass(item.stat)}}">
-            </paper-icon-button>
-            <paper-icon-button 
-                title="open for work reporting"
-                icon="work" 
-                class$="{{_valreqClass(item.stat)}}">
-            </paper-icon-button>
-            <paper-icon-button 
-                title="report submitted, staff reviewing"
-                icon="assignment-turned-in" 
-                class$="{{_reqappClass(item.stat)}}">
-            </paper-icon-button>
-            <paper-icon-button 
-                title="report waiting for director approval"
-                icon="done-all" 
-                class$="{{_subrptClass(item.stat)}}">
-            </paper-icon-button>
+      <div class="pagebody graycontainer">
 
+        <iron-selector selected="{{_selectedArbmonth}}" attr-for-selected="caseid">
+
+            <template is="dom-repeat" items="{{_arbmonths}}">
+            <div caseid="{{item.__firebaseKey__}}" id="arblist">
+                <span class="width200">{{_computeDisplayDate(item.__firebaseKey__)}}</span>
+
+                
+                <paper-icon-button 
+                    title="still editing a work request"
+                    icon="create" 
+                    class$="{{_pendreqClass(item.stat)}}">
+                </paper-icon-button>
+                <paper-icon-button 
+                    title="request submitted, staff reviewing"
+                    icon="assignment-turned-in" 
+                    class$="{{_subreqClass(item.stat)}}">
+                </paper-icon-button>
+                <paper-icon-button 
+                    title="waiting director approval"
+                    icon="done-all" 
+                    class$="{{_subreqClass(item.stat)}}">
+                </paper-icon-button>
+                <paper-icon-button 
+                    title="open for work reporting"
+                    icon="work" 
+                    class$="{{_valreqClass(item.stat)}}">
+                </paper-icon-button>
+                <paper-icon-button 
+                    title="report submitted, staff reviewing"
+                    icon="assignment-turned-in" 
+                    class$="{{_reqappClass(item.stat)}}">
+                </paper-icon-button>
+                <paper-icon-button 
+                    title="report waiting for director approval"
+                    icon="done-all" 
+                    class$="{{_subrptClass(item.stat)}}">
+                </paper-icon-button>
+
+              </div>
+            </template>
+        </iron-selector>
+
+        <div id="summaryTable">
+          <div class="layout horizontal wrap">
+
+            <div>
+              <h3>&nbsp;&nbsp;Request for:&nbsp;<span>{{selectedArbmonth}}</span></h3>
+              <table>
+                <tr><td>Total Case Fees</td><td class="width100right">$<span>{{arbmonth.totalfees}}</span></td></tr>
+                <tr><td>Hearing Fees</td><td class="width100right">$<span>{{arbmonth.totalhfees}}</span></td></tr>
+                <tr><td>Requested Travel Expense</td><td class="width100right">$<span>{{arbmonth.travel_exp}}</span></td></tr>
+                <tr><td>Requested Lodging</td><td class="width100right">$<span>{{arbmonth.lodging_exp}}</span></td></tr>
+                <tr><td>Requested Incidentals</td><td class="width100right">$<span>{{arbmonth.incidental_exp}}</span></td></tr>
+              </table>
+            </div>
+            <div class="flex"></div>
           </div>
-        </template>
+          <div class="layout vertical center">
+            <div class="layout horizontal center">
+              Cases
+              <paper-fab 
+                  id="casesitbtn"
+                  icon="arrow-forward"
+                  raised>
+                
+              </paper-fab>
+            </div>
+            <div class="layout horizontal center">
+            Travel
+              <paper-fab 
+                  icon="arrow-forward"
+                  raised
+                  id="travelitbtn">
+              </paper-fab>
+            </div>
+            <span class="flex"></span>
+            <paper-button 
+                class="submitit" 
+                id="submititbtn"
+                raised>
+              Submit
+            </paper-button>
+          </div>
+        </div> 
 
-    </iron-selector>
+      </div>
 
-
+    </div> <!-- end of wholepage -->
   </template>
 
 </dom-module>
