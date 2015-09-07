@@ -337,6 +337,7 @@ Example:
             selected-arbmonth="{{_arbmonth.arbMonthID}}">
         </aws-report>
       </div>  <!-- end of report -->
+      <div></div> <!-- end of blank -->
 
 
     </iron-pages>
@@ -401,7 +402,7 @@ Example:
       },
       _formIndex: {
         type: Number,
-        value: 2
+        value: 3
       }
 
 
@@ -415,7 +416,17 @@ Example:
       console.log("UID = " + this.userUid);
     },
 
+    listeners: {
+      'casesitbtn.tap': '_casesit',
+      'travelitbtn.tap': '_travelit'
+    },
 
+    _travelit: function () {
+      this._formIndex = 1;
+    },
+    _casesit: function () {
+      this._formIndex = 0;
+    },
 
 
     observers: [
@@ -505,6 +516,7 @@ Example:
       if (!arbmonth.stat || arbmonth.stat != "REQ_APPROVED") {
         return true;
       } else {
+        this._formIndex = 2;
         return false;
       }
     },
@@ -514,6 +526,7 @@ Example:
       if (!arbmonth.stat || arbmonth.stat != "PENDING_REQ") {
         return true;
       } else {
+        this._formIndex = 0;
         return false;
       }
     }
