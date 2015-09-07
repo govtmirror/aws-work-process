@@ -6,9 +6,16 @@ Copyright (c) 2015 dean wagner wagner@nmb.gov. All rights reserved.
 <link rel="import" href="../firebase-element/firebase-collection.html">
 <link rel="import" href="../firebase-element/firebase-document.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-pages/iron-pages.html">
+<link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="../aws-case-select/aws-case-select.html">
+<link rel="import" href="../aws-report/aws-report.html">
+<link rel="import" href="../aws-triplegs/aws-triplegs.html">
 <!-- <link rel="import" href="../bower_components/firebase-element/firebase-document.html"> -->
 
 <!--
@@ -54,12 +61,43 @@ Example:
 
     .red {
       color: red;
+      height: 32px;
+      width: 32px;
+      margin: 12px;
       background-color: #ffaaaa;
+    }
+
+    .grey {
+      margin: 16px;
     }
 
     #arblist {
       @apply(--layout-horizontal);
       @apply(--layout-center);
+    }
+
+    #monthselector {
+      margin:20px;
+      padding: 10px;
+      background-color: white;
+      color: black;
+      border-radius: 10px;
+    }
+
+    #summaryTable {
+      margin:20px;
+      padding: 10px;
+      background-color: white;
+      color: black;
+      border-radius: 10px;
+    }
+
+    #navArea {
+      margin:20px;
+      padding: 10px;
+      background-color: white;
+      color: black;
+      border-radius: 10px;
     }
 
     .wholepage {
@@ -70,6 +108,48 @@ Example:
     .pagebody {
       @apply(--layout-horizontal);
       @apply(--layout-top);
+    }
+
+    table {
+      width: 100%;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      font-size: 16px;
+    }
+    tr, td, th {
+      padding: 5px;
+      color: black;
+    }
+    .width75right {
+      width:75px;
+      text-align: right;
+    }
+    th {
+      background-color: #ccc;
+      color: black;
+    }
+    .tdcenter {
+      text-align: center;
+    }
+    tr:nth-child(even) {background: #CCC}
+    tr:nth-child(odd) {background: #FFF}
+
+    .submitit {
+      background-color: yellow;
+      color:black;
+      margin: 10px;
+    }
+    .deleteit {
+      background-color: red;
+      margin: 10px;
+    }
+    .newit {
+      background-color: green;
+      margin: 10px;
+    }
+
+    paper-fab {
+      background-color: #B8860B;
+      margin: 15px;
     }
 
 
@@ -86,134 +166,182 @@ Example:
         data="{{_arbmonth}}">
     </firebase-document>
 
+    <div class="pagebody graycontainer">
 
-    <div class="wholepage">
-
-      <div class="pageheader graycontainer">
-
-        <h1>{{_computeDisplayDate(_selectedArbmonth)}}</h1>
-        <h1>{{_arbmonth.arbMonthID}}</h1>
-
-      </div> <!-- end of pageheader -->
-
-      <div class="pagebody graycontainer">
-
+      <div id="monthselector">
+        <h3>Select a report:</h3>
         <iron-selector 
             selected="{{_selectedArbmonth}}" 
             attr-for-selected="caseid">
-
-            <template is="dom-repeat" items="{{_arbmonths}}">
+          <template is="dom-repeat" items="{{_arbmonths}}">
             <div caseid="{{item.__firebaseKey__}}" id="arblist">
-                <span class="width200">{{_computeDisplayDate(item.__firebaseKey__)}}</span>
-
-                
-                <paper-icon-button 
-                    title="still editing a work request"
-                    icon="create" 
-                    class$="{{_pendreqClass(item.stat)}}">
-                </paper-icon-button>
-                <paper-icon-button 
-                    title="request submitted, staff reviewing"
-                    icon="assignment-turned-in" 
-                    class$="{{_subreqClass(item.stat)}}">
-                </paper-icon-button>
-                <paper-icon-button 
-                    title="waiting director approval"
-                    icon="done-all" 
-                    class$="{{_subreqClass(item.stat)}}">
-                </paper-icon-button>
-                <paper-icon-button 
-                    title="open for work reporting"
-                    icon="work" 
-                    class$="{{_valreqClass(item.stat)}}">
-                </paper-icon-button>
-                <paper-icon-button 
-                    title="report submitted, staff reviewing"
-                    icon="assignment-turned-in" 
-                    class$="{{_reqappClass(item.stat)}}">
-                </paper-icon-button>
-                <paper-icon-button 
-                    title="report waiting for director approval"
-                    icon="done-all" 
-                    class$="{{_subrptClass(item.stat)}}">
-                </paper-icon-button>
-
-              </div>
-            </template>
+              <hr>
+              <span class="width200">{{_computeDisplayDate(item.__firebaseKey__)}}</span>
+              <iron-icon 
+                  title="still editing a work request"
+                  icon="create" 
+                  class$="{{_pendreqClass(item.stat)}}">
+              </iron-icon>
+              <iron-icon 
+                  title="request submitted, staff reviewing"
+                  icon="backup" 
+                  class$="{{_subreqClass(item.stat)}}">
+              </iron-icon>
+              
+              <iron-icon 
+                  title="reporting arbitration results"
+                  icon="thumbs-up-down" 
+                  class$="{{_reqappClass(item.stat)}}">
+              </iron-icon>
+              <iron-icon 
+                  title="report submitted, staff reviewing"
+                  icon="assignment-turned-in" 
+                  class$="{{_subrptClass(item.stat)}}">
+              </iron-icon>
+            </div>
+          </template>
         </iron-selector>
+        <div class="newarbmonth">
+                <paper-button 
+                    class="newit" 
+                    id="newitbtn">
+                  New
+                </paper-button>
+              
+                <paper-button 
+                    class="deleteit" 
+                    id="deleteitbtn">
+                  Delete
+                </paper-button>    
+              </div>
+      </div>  <!-- end of monthselector -->
 
-        <div id="summaryTable">
-          <div class="layout horizontal wrap">
+      <div id="summaryTable">
+        <div class="layout horizontal wrap">
 
-            <div>
-              <h3>&nbsp;&nbsp;Request for:&nbsp;<span>{{_selectedArbmonth}}</span></h3>
-              <table>
-                <tr><th></th><th>Request</th><th>Approved</th><th>Actual</th></tr>
-                <tr>
-                  <td>Total Case Fees</td>
-                  <td class="width75right">$<span>{{_arbmonth.totalfees}}</span></td>
-                  <td class="width75right">$<span>{{_arbmonth.totalfees_app}}</span></td>
-                  <td class="width75right">$<span>{{_arbmonth.totalfees_act}}</span></td>
-                </tr>
-                <tr>
-                  <td>Hearing Fees</td>
-                  <td class="width75right">$<span>{{_arbmonth.totalhfees}}</td>
-                  <td class="width75right">$<span>{{_arbmonth.totalhfees_app}}</span></td>
-                  <td class="width75right">$<span>{{_arbmonth.totalhfees_act}}</span></td>
-                </tr>
-                <tr>
-                  <td>Travel Expense</td>
-                  <td class="width75right">$<span>{{_arbmonth.travel_exp}}</span></td>
-                  <td class="width75right">$<span>{{_arbmonth.travel_app}}</span></td>
-                  <!-- <td class="width75right">$<span>{{arbmonth.travel_act}}</span></td> -->
-                </tr>
-                <tr>
-                  <td>Lodging</td>
-                  <td class="width75right">$<span>{{_arbmonth.lodging_exp}}</span></td>
-                  <td class="width75right">$<span>{{_arbmonth.lodging_app}}</span></td>
-                  <!-- <td class="width75right">$<span>{{arbmonth.lodging_act}}</span></td> -->
-                </tr>
-                <tr>
-                  <td>Requested Incidentals</td>
-                  <td class="width75right">$<span>{{_arbmonth.incidental_exp}}</span></td>
-                  <td class="width75right">$<span>{{_arbmonth.incidental_app}}</span></td>
-                  <!-- <td class="width75right">$<span>{{arbmonth.incidental_act}}</span></td> -->
-                </tr>
-              </table>
-            </div>
-            <div class="flex"></div>
+          <div>
+            <h3>&nbsp;&nbsp;Summary for:&nbsp;<span>{{_computeDisplayDate(_selectedArbmonth)}}</span></h3>
+
+            <table>
+              <tr><th></th><th>Request</th><th>Approved</th><th>Actual</th></tr>
+              <tr>
+                <td>Total Case Fees</td>
+                <td class="width75right">$<span>{{_arbmonth.totalfees}}</span></td>
+                <td class="width75right">$<span>{{_arbmonth.totalfees_app}}</span></td>
+                <td class="width75right">$<span>{{_arbmonth.totalfees_act}}</span></td>
+              </tr>
+              <tr>
+                <td>Hearing Fees</td>
+                <td class="width75right">$<span>{{_arbmonth.totalhfees}}</td>
+                <td class="width75right">$<span>{{_arbmonth.totalhfees_app}}</span></td>
+                <td class="width75right">$<span>{{_arbmonth.totalhfees_act}}</span></td>
+              </tr>
+              <tr>
+                <td>Travel Expense</td>
+                <td class="width75right">$<span>{{_arbmonth.travel_exp}}</span></td>
+                <td class="width75right">$<span>{{_arbmonth.travel_app}}</span></td>
+                <!-- <td class="width75right">$<span>{{arbmonth.travel_act}}</span></td> -->
+              </tr>
+              <tr>
+                <td>Lodging</td>
+                <td class="width75right">$<span>{{_arbmonth.lodging_exp}}</span></td>
+                <td class="width75right">$<span>{{_arbmonth.lodging_app}}</span></td>
+                <!-- <td class="width75right">$<span>{{arbmonth.lodging_act}}</span></td> -->
+              </tr>
+              <tr>
+                <td>Incidentals</td>
+                <td class="width75right">$<span>{{_arbmonth.incidental_exp}}</span></td>
+                <td class="width75right">$<span>{{_arbmonth.incidental_app}}</span></td>
+                <!-- <td class="width75right">$<span>{{arbmonth.incidental_act}}</span></td> -->
+              </tr>
+            </table>
           </div>
-          <div class="layout vertical center">
-            <div class="layout horizontal center">
-              Cases
-              <paper-fab 
-                  id="casesitbtn"
-                  icon="arrow-forward"
-                  raised>
-                
-              </paper-fab>
-            </div>
-            <div class="layout horizontal center">
-            Travel
-              <paper-fab 
-                  icon="arrow-forward"
-                  raised
-                  id="travelitbtn">
-              </paper-fab>
-            </div>
-            <span class="flex"></span>
-            <paper-button 
-                class="submitit" 
-                id="submititbtn"
+          <div class="flex"></div>
+        </div>
+      </div> <!-- end of summary table -->
+
+      <div id="navArea" hidden$="{{_navHidden}}">
+        <div 
+            id="pendReqNav" 
+            class="layout vertical center"
+            hidden$="{{_computePendReqNavHidden(_arbmonth)}}">
+          <div class="layout horizontal center">
+            Cases
+            <paper-fab 
+                id="casesitbtn"
+                icon="arrow-forward"
                 raised>
-              Submit
-            </paper-button>
+              
+            </paper-fab>
           </div>
-        </div> 
+          <div class="layout horizontal center">
+          Travel
+            <paper-fab 
+                icon="arrow-forward"
+                raised
+                id="travelitbtn">
+            </paper-fab>
+          </div>
+          <span class="flex"></span>
+          <paper-button 
+              class="submitit" 
+              id="submitReqbtn"
+              raised
+              raised>
+            Submit<br>
+            Work Schedule for<br>
+            <span>{{_computeDisplayDate(_selectedArbmonth)}}</span>
+          </paper-button>
+        </div> <!-- end of pendReqNav -->
 
-      </div>
+        <div 
+            id="reqAppNav"
+            hidden$="{{_computeReqAppNavHidden(_arbmonth)}}">
+          <paper-button 
+              class="submitit" 
+              id="submitRptbtn"
+              raised
+              >
+            Submit <br>
+            Work Report for<br>
+            <span>{{_computeDisplayDate(_selectedArbmonth)}}</span>
+          </paper-button>
+        </div>
+      </div> <!-- end of nav -->
+       
+    </div>
 
-    </div> <!-- end of wholepage -->
+    <iron-pages selected="{{_formIndex}}">
+      <div>
+        <aws-case-select 
+            fb-url="{{fbUrl}}" 
+            user-uid="{{userUid}}" 
+            arbmonth-id="{{_arbmonth.arbMonthID}}"
+            arbmonth-stat="{{_arbmonth.stat}}">
+        </aws-case-select>
+      </div> <!-- end of case selector -->
+      <div>
+        <aws-triplegs
+            fb-url="{{fbUrl}}" 
+            user-uid="{{userUid}}" 
+            arbmonth-id="{{_arbmonth.arbMonthID}}"
+            arbmonth-stat="{{_arbmonth.stat}}"
+            min-cases="5">
+        </aws-triplegs>
+      </div> <!-- end of triplegs -->
+
+      <div>
+        <aws-report
+            fire-db="{{fbUrl}}"
+            user-uid="{{userUid}}"
+            selected-arbmonth="{{_arbmonth.arbMonthID}}">
+        </aws-report>
+      </div>  <!-- end of report -->
+
+
+    </iron-pages>
+
+
   </template>
 
 </dom-module>
@@ -266,7 +394,15 @@ Example:
       },
 
       _monthUrl: String,
-      _arbmonth: Object
+      _arbmonth: Object,
+      _navHidden: {
+        type: Boolean,
+        value: true
+      },
+      _formIndex: {
+        type: Number,
+        value: 2
+      }
 
 
     },
@@ -294,7 +430,7 @@ Example:
     _selectarbmonthChg: function(ab) {
       console.log("in goc damn function");
       this._monthUrl = this._arbmonthsUrl + "/" + this._selectedArbmonth
-      console.log("in goc damn function 2 " + this._monthUrl);
+      console.log("in goc damn function 2 " + this._formIndex);
     },
 
 
@@ -346,13 +482,7 @@ Example:
       }
     },
 
-    _valreqClass: function (stat) {
-      if (stat == "VALID_REQ") {
-        return "red"
-      } else {
-        return "grey"
-      }
-    },
+
     _reqappClass: function (stat) {
       if (stat == "REQ_APPROVED") {
         return "red"
@@ -367,13 +497,27 @@ Example:
         return "grey"
       }
     },
-    _valrptClass: function (stat) {
-      if (stat == "VALID_RPT") {
-        return "red"
+
+    
+
+    _computeReqAppNavHidden: function (arbmonth) {
+      this._navHidden = false;
+      if (!arbmonth.stat || arbmonth.stat != "REQ_APPROVED") {
+        return true;
       } else {
-        return "grey"
+        return false;
+      }
+    },
+
+    _computePendReqNavHidden: function (arbmonth) {
+      this._navHidden = false;
+      if (!arbmonth.stat || arbmonth.stat != "PENDING_REQ") {
+        return true;
+      } else {
+        return false;
       }
     }
+
 
 
   });
