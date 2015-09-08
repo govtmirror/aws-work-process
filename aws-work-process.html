@@ -166,6 +166,69 @@ Example:
         data="{{_arbmonth}}">
     </firebase-document>
 
+    <paper-dialog id="newdialog" modal>
+      <span>
+        &nbsp;&nbsp;&nbsp;Decision:&nbsp;
+        <select id="selectedReqMonth">
+          <template is="dom-repeat" items="{{_displayNewArbmonths}}">
+            <option value="{{item.arbmonth}}">{{_computeDisplayDate(item.arbmonth)}}</option>
+          </template>
+        </select>
+      </span>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm on-tap="_datePicked">OK</paper-button>
+      </div>
+    </paper-dialog>
+    <paper-dialog id="subRptdialog" modal class="paper-date-picker-dialog">
+      <span>
+        &nbsp;&nbsp;&nbsp;report:&nbsp;
+        <select id="selectedReqMonth">
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+        </select>
+      </span>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm on-tap="_datePicked">OK</paper-button>
+      </div>
+    </paper-dialog>
+    <paper-dialog id="subReqdialog" modal class="paper-date-picker-dialog">
+      <span>
+        &nbsp;&nbsp;&nbsp;Request:&nbsp;
+        <select id="selectedReqMonth">
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+        </select>
+      </span>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm on-tap="_datePicked">OK</paper-button>
+      </div>
+    </paper-dialog>
+    <paper-dialog id="deletedialog" modal class="paper-date-picker-dialog">
+      <span>
+        &nbsp;&nbsp;&nbsp;Delete:&nbsp;
+        <select id="selectedReqMonth">
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+        </select>
+      </span>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm on-tap="_datePicked">OK</paper-button>
+      </div>
+    </paper-dialog>
+
     <div class="pagebody graycontainer">
 
       <div id="monthselector">
@@ -179,23 +242,23 @@ Example:
               <span class="width200">{{_computeDisplayDate(item.__firebaseKey__)}}</span>
               <iron-icon 
                   title="still editing a work request"
-                  icon="create" 
+                  icon="forward" 
                   class$="{{_pendreqClass(item.stat)}}">
               </iron-icon>
               <iron-icon 
                   title="request submitted, staff reviewing"
-                  icon="backup" 
+                  icon="forward" 
                   class$="{{_subreqClass(item.stat)}}">
               </iron-icon>
               
               <iron-icon 
                   title="reporting arbitration results"
-                  icon="thumbs-up-down" 
+                  icon="forward" 
                   class$="{{_reqappClass(item.stat)}}">
               </iron-icon>
               <iron-icon 
                   title="report submitted, staff reviewing"
-                  icon="assignment-turned-in" 
+                  icon="cloud-done" 
                   class$="{{_subrptClass(item.stat)}}">
               </iron-icon>
             </div>
@@ -353,6 +416,7 @@ Example:
 
     is: 'aws-work-process',
 
+// *** properties
     properties: {
       
 
@@ -403,6 +467,13 @@ Example:
       _formIndex: {
         type: Number,
         value: 3
+      },
+
+      _displayNewArbmonths: {
+        type: Array,
+        value: function () {
+          return [];
+        }
       }
 
 
@@ -416,9 +487,63 @@ Example:
       console.log("UID = " + this.userUid);
     },
 
+// ***  listeners
     listeners: {
+      'submitReqbtn.tap': '_submitReq',
+      'submitRptbtn.tap': '_submitRpt',
+      'deleteitbtn.tap': '_deleteit',
+      'newitbtn.tap': '_newit',
       'casesitbtn.tap': '_casesit',
       'travelitbtn.tap': '_travelit'
+    },
+
+    _submitReq: function () {
+      this.$.subReqdialog.open();
+    },
+
+    _submitRpt: function () {
+      this.$.subRptdialog.open();
+    },
+
+    _deleteit: function () {
+      this.$.deletedialog.open();
+    },
+
+    _newit: function () {
+      this._displayNewArbmonths = [];
+      var nowTime = new Date();
+      for (var m = 0; m < 7; m++) {
+        var mm = nowTime.getMonth() + 1;
+        var monthString = nowTime.getFullYear().toString();
+        if (mm < 10 ) {
+          monthString = monthString + "-0" + mm;
+        } else {
+          monthString = monthString + "-" + mm;
+        }
+        var goodArbmonth = true;
+
+        for (var aa in this._arbmonths) {
+          //alert("I love you, arbmonth " + this._arbmonths[aa].__firebaseKey__);
+          // console.log("firebaseKey " + this._arbmonths[aa].__firebaseKey__)
+          if (monthString == this._arbmonths[aa].__firebaseKey__) {
+            goodArbmonth = false;
+          } else {
+            // console.log("this is _arbmonths " + this._arbmonths);
+          }
+        } 
+        if (goodArbmonth) {
+          // this._displayNewArbmonths.push({"arbmonth":monthString});
+          this.push('_displayNewArbmonths', { arbmonth: monthString });
+          console.log(monthString + ", " + this._arbmonths.length + ", " + this._displayNewArbmonths);
+        } else {
+          console.log("You already have that month.  It cannot be duplicated unless you first delete it.");
+        }
+
+
+        nowTime.setMonth(mm);
+      }
+
+      this.$.newdialog.open();
     },
 
     _travelit: function () {
@@ -428,7 +553,7 @@ Example:
       this._formIndex = 0;
     },
 
-
+// **  observers
     observers: [
       'updateUrls(fbUrl, userUid)'
     ],
@@ -446,7 +571,7 @@ Example:
 
 
 
-    // Element Lifecycle
+// Element Lifecycle
     ready: function () {
       console.log("in ready");
     },
@@ -466,7 +591,7 @@ Example:
 
 
     
-    // Element Behavior
+// Element Behavior
 
     //arbmonth list
 
