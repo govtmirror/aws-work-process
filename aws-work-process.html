@@ -168,8 +168,10 @@ Example:
 
     <paper-dialog id="newdialog" modal>
       <span>
-        &nbsp;&nbsp;&nbsp;Decision:&nbsp;
-        <select id="selectedReqMonth">
+        &nbsp;&nbsp;&nbsp;New Month:&nbsp;
+        <select 
+            id="selectedReqMonth"
+            on-change="_selectNewArbmonth">
           <template is="dom-repeat" items="{{_displayNewArbmonths}}">
             <option value="{{item.arbmonth}}">{{_computeDisplayDate(item.arbmonth)}}</option>
           </template>
@@ -177,52 +179,25 @@ Example:
       </span>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm on-tap="_datePicked">OK</paper-button>
+        <paper-button dialog-confirm on-tap="_doNewMonth">OK</paper-button>
       </div>
     </paper-dialog>
     <paper-dialog id="subRptdialog" modal class="paper-date-picker-dialog">
-      <span>
-        &nbsp;&nbsp;&nbsp;report:&nbsp;
-        <select id="selectedReqMonth">
-          <option value="01">January</option>
-          <option value="02">February</option>
-          <option value="03">March</option>
-          <option value="04">April</option>
-          <option value="05">May</option>
-        </select>
-      </span>
+      <h3>report</h3>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm on-tap="_datePicked">OK</paper-button>
+        <paper-button dialog-confirm on-tap="_doNewMonth">OK</paper-button>
       </div>
     </paper-dialog>
     <paper-dialog id="subReqdialog" modal class="paper-date-picker-dialog">
-      <span>
-        &nbsp;&nbsp;&nbsp;Request:&nbsp;
-        <select id="selectedReqMonth">
-          <option value="01">January</option>
-          <option value="02">February</option>
-          <option value="03">March</option>
-          <option value="04">April</option>
-          <option value="05">May</option>
-        </select>
-      </span>
+      <h3>request</h3>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
         <paper-button dialog-confirm on-tap="_datePicked">OK</paper-button>
       </div>
     </paper-dialog>
     <paper-dialog id="deletedialog" modal class="paper-date-picker-dialog">
-      <span>
-        &nbsp;&nbsp;&nbsp;Delete:&nbsp;
-        <select id="selectedReqMonth">
-          <option value="01">January</option>
-          <option value="02">February</option>
-          <option value="03">March</option>
-          <option value="04">April</option>
-          <option value="05">May</option>
-        </select>
-      </span>
+      <h3>delete</h3>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
         <paper-button dialog-confirm on-tap="_datePicked">OK</paper-button>
@@ -474,7 +449,9 @@ Example:
         value: function () {
           return [];
         }
-      }
+      },
+
+      _selectorMonth: String
 
 
     },
@@ -538,12 +515,37 @@ Example:
         } else {
           console.log("You already have that month.  It cannot be duplicated unless you first delete it.");
         }
-
-
         nowTime.setMonth(mm);
       }
-
+      if (this._displayNewArbmonths.length > 0) {
+        this._selectorMonth = this._displayNewArbmonths[0].arbmonth;
+      }
       this.$.newdialog.open();
+    },
+    _selectNewArbmonth: function (e) {
+      console.log("in _selectNewArbmonth, " + JSON.stringify(e.target.value));
+      this._selectorMonth = JSON.stringify(e.target.value);
+    },
+    _doNewMonth: function () {
+      console.log("in _doNewMonth, " + this._selectorMonth);
+      var newArbmonth = this._selectorMonth;
+
+
+      var params = {
+        arbMonthID: newArbmonth,
+        arbuid: this.userUid,
+        stat: "PENDING_REQ",
+        totalfees: 0,
+        travel_exp: 0,
+        per_diem: 0
+      };
+
+      var yoURL = this._arbmonthsUrl + "/" + newArbmonth;
+      console.log("IN NEWIT, yoUrl = " + yoURL);
+      var ref = new Firebase(yoURL);
+      ref.set(params);
+
+
     },
 
     _travelit: function () {
