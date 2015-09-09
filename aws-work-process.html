@@ -305,52 +305,62 @@ Example:
       </div> <!-- end of summary table -->
 
       <div id="navArea" hidden$="{{_navHidden}}">
-        <div 
-            id="pendReqNav" 
-            class="layout vertical center"
-            hidden$="{{_computePendReqNavHidden(_arbmonth)}}">
-          <div class="layout horizontal center">
-            Cases
-            <paper-fab 
-                id="casesitbtn"
-                icon="arrow-forward"
-                raised>
-              
-            </paper-fab>
-          </div>
-          <div class="layout horizontal center">
-          Travel
-            <paper-fab 
-                icon="arrow-forward"
-                raised
-                id="travelitbtn">
-            </paper-fab>
-          </div>
-          <span class="flex"></span>
-          <paper-button 
-              class="submitit" 
-              id="submitReqbtn"
-              raised
-              raised>
-            Submit<br>
-            Work Schedule for<br>
-            <span>{{_computeDisplayDate(_selectedArbmonth)}}</span>
-          </paper-button>
-        </div> <!-- end of pendReqNav -->
 
-        <div 
-            id="reqAppNav"
-            hidden$="{{_computeReqAppNavHidden(_arbmonth)}}">
-          <paper-button 
-              class="submitit" 
-              id="submitRptbtn"
-              raised
-              >
-            Submit <br>
-            Work Report for<br>
-            <span>{{_computeDisplayDate(_selectedArbmonth)}}</span>
-          </paper-button>
-        </div>
+      <iron-pages selected="{{_navIndex}}">
+
+          <div id="pendReqNav" class="layout vertical center">
+            <div class="layout horizontal center">
+              Cases
+              <paper-fab 
+                  id="casesitbtn"
+                  icon="arrow-forward"
+                  raised>
+              </paper-fab>
+            </div>
+            <div class="layout horizontal center">
+            Travel
+              <paper-fab 
+                  icon="arrow-forward"
+                  raised
+                  id="travelitbtn">
+              </paper-fab>
+            </div>
+            <span class="flex"></span>
+            <paper-button 
+                class="submitit" 
+                id="submitReqbtn"
+                raised
+                raised>
+              Submit<br>
+              Work Schedule for<br>
+              <span>{{_computeDisplayDate(_selectedArbmonth)}}</span>
+            </paper-button>
+          </div> <!-- end of pendReqNav -->
+
+          <div></div>
+
+          <div></div>
+
+          <div id="reqAppNav">
+            <paper-button 
+                class="submitit" 
+                id="submitRptbtn"
+                raised
+                >
+              Submit <br>
+              Work Report for<br>
+              <span>{{_computeDisplayDate(_selectedArbmonth)}}</span>
+            </paper-button>
+          </div>
+
+          <div></div>
+
+          <div></div>
+
+          <div></div>
+
+        </iron-pages>
+
       </div> <!-- end of nav -->
        
     </div>
@@ -447,7 +457,12 @@ Example:
       },
       _formIndex: {
         type: Number,
-        value: 3
+        value: 7
+      },
+
+      _navIndex: {
+        type: Number,
+        value: 7
       },
 
       _displayNewArbmonths: {
@@ -621,7 +636,8 @@ Example:
 
 // **  observers
     observers: [
-      'updateUrls(fbUrl, userUid)'
+      'updateUrls(fbUrl, userUid)',
+      '_statCheck(_arbmonth.stat)'
     ],
 
     updateUrls: function(fbUrl, userUid) {
@@ -706,33 +722,44 @@ Example:
       }
     },
 
-    
 
-    _computeReqAppNavHidden: function (arbmonth) {
-      this._navHidden = false;
-      if (arbmonth) {
-         if (!arbmonth.stat || arbmonth.stat != "REQ_APPROVED") {
-          return true;
-        } else {
-          this._formIndex = 2;
-          return false;
-        }
-      } else {
-        return true;
-      }
-    },
-
-    _computePendReqNavHidden: function (arbmonth) {
-      this._navHidden = false;
-      if (arbmonth) {
-        if (!arbmonth.stat || arbmonth.stat != "PENDING_REQ") {
-          return true;
-        } else {
+    _statCheck: function (stat) {
+      switch (stat) {
+        case "PENDING_REQ":
+          this._navHidden = false;
+          this._navIndex = 0;
           this._formIndex = 0;
-          return false;
-        }
-      } else {
-        return true;
+          break;
+        case "SUBMITTED_REQ":
+          this._navHidden = true;
+          this._navIndex = 1;
+          this._formIndex = 7;
+          break;
+        case "VALID_REQ":
+          this._navHidden = true;
+          this._navIndex = 2;
+          this._formIndex = 7;
+          break;
+        case "REQ_APPROVED":
+          this._navHidden = false;
+          this._navIndex = 3;
+          this._formIndex = 2;
+          break;
+        case "SUBMITTED_RPT":
+          this._navHidden = true;
+          this._navIndex = 4;
+          this._formIndex = 7;
+          break;
+        case "VALID_RPT":
+          this._navHidden = true;
+          this._navIndex = 5;
+          this._formIndex = 7;
+          break;
+        default:
+          this._navHidden = true;
+          this._navIndex = 6;
+          this._formIndex = 7;
+          break;
       }
     }
 
