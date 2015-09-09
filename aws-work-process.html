@@ -192,14 +192,14 @@ Example:
       <h3>report</h3>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm on-tap="_doNewMonth">OK</paper-button>
+        <paper-button dialog-confirm on-tap="_doSubmitRpt">OK</paper-button>
       </div>
     </paper-dialog>
     <paper-dialog id="subReqdialog" modal class="paper-date-picker-dialog">
       <h3>request</h3>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm on-tap="_datePicked">OK</paper-button>
+        <paper-button dialog-confirm on-tap="_doSubmitReq">OK</paper-button>
       </div>
     </paper-dialog>
     <paper-dialog id="deletedialog" modal class="paper-date-picker-dialog">
@@ -483,26 +483,43 @@ Example:
     _submitReq: function () {
       this.$.subReqdialog.open();
     },
+    _doSubmitReq: function () {
+      console.log("in _doSubmitReq");
+      if (this._arbmonth && this._arbmonth.stat == "PENDING_REQ") {
+        var reqUrl = this._arbmonthsUrl + "/" + this._arbmonth.arbMonthID;
+        var reqRef = new Firebase(reqUrl);
+        var param = {'stat':'SUBMITTED_REQ'};
+        reqRef.update(param);
+        console.log("end of road")
+      } else {
+        console.log("failed to submit");
+      }
+    },
 
     _submitRpt: function () {
       this.$.subRptdialog.open();
+    },
+    _doSubmitRpt: function () {
+      console.log("in _doSubmitRpt");
+      if (this._arbmonth && this._arbmonth.stat == "REQ_APPROVED") {
+        var reqUrl = this._arbmonthsUrl + "/" + this._arbmonth.arbMonthID;
+        var reqRef = new Firebase(reqUrl);
+        var param = {'stat':'SUBMITTED_RPT'};
+        reqRef.update(param);
+        console.log("end of road")
+      } else {
+        console.log("failed to submit");
+      }
     },
 
     _deleteit: function () {
       this.$.deletedialog.open();
     },
-
-
-
     _doArbmonthDelete: function () {
       if (this._arbmonth && this._arbmonth.stat == "PENDING_REQ") {
         //console.log("in deleteit, " + this.arbmonth.__firebaseKey__);
         var toDeleteArbmonthKey = this._arbmonth.arbMonthID;
         console.log("in _doArbmonthDelete 1.5, " + toDeleteArbmonthKey);
-        
-
-
-
         if (this._assignments) {
           for (var a in this._assignments) {
             var assiID = this._assignments[a].__firebaseKey__;
@@ -537,11 +554,6 @@ Example:
         alert("To DELETE, a month must be \"PENDING_REQ\"");
       }
     },
-
-
-
-
-
 
     _newit: function () {
       this._displayNewArbmonths = [];
