@@ -158,6 +158,8 @@ Example:
   <template>
 
     <firebase-collection
+        order-value-type="String"
+        order-by-child="open"
         location="{{_arbmonthsUrl}}"
         data="{{_arbmonths}}">
     </firebase-collection>
@@ -524,7 +526,7 @@ Example:
     },
     _selectNewArbmonth: function (e) {
       console.log("in _selectNewArbmonth, " + JSON.stringify(e.target.value));
-      this._selectorMonth = JSON.stringify(e.target.value);
+      this._selectorMonth = e.target.value;
     },
     _doNewMonth: function () {
       console.log("in _doNewMonth, " + this._selectorMonth);
