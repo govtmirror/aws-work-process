@@ -166,6 +166,11 @@ Example:
         location="{{_monthUrl}}"
         data="{{_arbmonth}}">
     </firebase-document>
+    <firebase-collection
+        id="assignments_fb"
+        location="{{_assignmentsUrl}}"
+        data="{{_assignments}}">
+    </firebase-collection>
 
     <paper-dialog id="newdialog" modal>
       <span>
@@ -490,40 +495,42 @@ Example:
 
 
     _doArbmonthDelete: function () {
-      alert("in _doArbmonthDelete");
       if (this._arbmonth && this._arbmonth.stat == "PENDING_REQ") {
         //console.log("in deleteit, " + this.arbmonth.__firebaseKey__);
         var toDeleteArbmonthKey = this._arbmonth.arbMonthID;
-        console.log("in deletemonth 1.5, " + toDeleteArbmonthKey);
-        var deletemonth = this.$.arbmonths_fb.getByKey(toDeleteArbmonthKey);
+        console.log("in _doArbmonthDelete 1.5, " + toDeleteArbmonthKey);
+        
 
-        // if (this.assignments) {
-        //   for (var a in this.assignments) {
-        //     var assiID = this.assignments[a].__firebaseKey__;
-        //     //console.log("in deletemonth 23" + assiID);
-        //     var deleteStuffUrl = this.assignmentsUrl + "/" + assiID ;
-        //     //console.log("in deletemonth 24" + deleteStuffUrl);
-        //     var ref5 = new Firebase(deleteStuffUrl);
 
-        //     if (this.assignments[a].hearsched == toDeleteArbmonthKey) {
-        //       var param = {'hearsched':null};
-        //       ref5.update(param);
-        //     }
-        //     if (this.assignments[a].travsched == toDeleteArbmonthKey) {
-        //       var param = {'travsched':null,'tripID':null};
-        //       ref5.update(param);
-        //     }
-        //     if (this.assignments[a].writesched == toDeleteArbmonthKey) {
-        //       var param = {'writesched':null};
-        //       ref5.update(param);
-        //     }
-        //   }
-        // } else {
-        //   console.log("in deletemonth z");
-        // }
-        console.log("in deletemonth 3, " + deletemonth);
-        // this.$.arbmonths_fb.removeByKey(deletemonth);
+
+        if (this._assignments) {
+          for (var a in this._assignments) {
+            var assiID = this._assignments[a].__firebaseKey__;
+
+            var deleteStuffUrl = this._assignmentsUrl + "/" + assiID ;
+
+            var ref5 = new Firebase(deleteStuffUrl);
+
+            if (this._assignments[a].hearsched == toDeleteArbmonthKey) {
+              var param = {'hearsched':null};
+              ref5.update(param);
+            }
+            if (this._assignments[a].travsched == toDeleteArbmonthKey) {
+              var param = {'travsched':null,'tripID':null};
+              ref5.update(param);
+            }
+            if (this._assignments[a].writesched == toDeleteArbmonthKey) {
+              var param = {'writesched':null};
+              ref5.update(param);
+            }
+          }
+        } else {
+          console.log("in _doArbmonthDelete z");
+        }
+
+        console.log("in _doArbmonthDelete x");
         this.$.arbmonths_fb.removeByKey(this._arbmonth.arbMonthID);
+        console.log("in _doArbmonthDelete y");
         this._arbmonth = null;
         this._selectedArbmonth = null;
       } else {
@@ -633,7 +640,8 @@ Example:
 
     _assembleUrls: function () {
       this._arbmonthsUrl = this.fbUrl + "/users/" + this.userUid + "/arbmonths";
-      console.log("in assembleUrls, 2 " + this._arbmonthsUrl);
+      this._assignmentsUrl = this.fbUrl + "/users/" + this.userUid + "/assignments";
+      console.log("in assembleUrls, 2 " + this._arbmonthsUrl + ", " + this._assignmentsUrl);
     },
 
 
@@ -697,6 +705,8 @@ Example:
           this._formIndex = 2;
           return false;
         }
+      } else {
+        return true;
       }
     },
 
@@ -709,6 +719,8 @@ Example:
           this._formIndex = 0;
           return false;
         }
+      } else {
+        return true;
       }
     }
 
