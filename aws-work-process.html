@@ -60,15 +60,15 @@ Example:
     }
 
     .red {
-      color: red;
+      color: blue;
       height: 32px;
       width: 32px;
-      margin: 12px;
-      background-color: #ffaaaa;
+      margin: 0px;
     }
 
     .grey {
-      margin: 16px;
+      color: #8888ff;
+      margin: 4px;
     }
 
     #arblist {
@@ -213,7 +213,7 @@ Example:
     <div class="pagebody graycontainer">
 
       <div id="monthselector">
-        <h3>Select a report:</h3>
+        <h3>Click on a Month:</h3>
         <iron-selector 
             selected="{{_selectedArbmonth}}" 
             attr-for-selected="caseid">
@@ -245,16 +245,18 @@ Example:
             </div>
           </template>
         </iron-selector>
-        <div class="newarbmonth">
+        <div>
                 <paper-button 
                     class="newit" 
-                    id="newitbtn">
+                    id="newitbtn"
+                    raised>
                   New
                 </paper-button>
               
                 <paper-button 
                     class="deleteit" 
-                    id="deleteitbtn">
+                    id="deleteitbtn"
+                    raised>
                   Delete
                 </paper-button>    
               </div>
@@ -691,7 +693,12 @@ Example:
     },
 
     _pendreqClass: function (stat) {
-      if (stat == "PENDING_REQ") {
+      if (stat == "PENDING_REQ" ||
+          stat == "SUBMITTED_REQ" ||
+          stat == "VALID_REQ" ||
+          stat == "REQ_APPROVED" ||
+          stat == "SUBMITTED_RPT" ||
+          stat == "VALID_RPT") {
         return "red"
       } else {
         return "grey"
@@ -699,7 +706,11 @@ Example:
     },
 
     _subreqClass: function (stat) {
-      if (stat == "SUBMITTED_REQ") {
+      if (stat == "SUBMITTED_REQ" ||
+          stat == "VALID_REQ" ||
+          stat == "REQ_APPROVED" ||
+          stat == "SUBMITTED_RPT" ||
+          stat == "VALID_RPT") {
         return "red"
       } else {
         return "grey"
@@ -708,14 +719,17 @@ Example:
 
 
     _reqappClass: function (stat) {
-      if (stat == "REQ_APPROVED") {
+      if (stat == "REQ_APPROVED" ||
+          stat == "SUBMITTED_RPT" ||
+          stat == "VALID_RPT") {
         return "red"
       } else {
         return "grey"
       }
     },
     _subrptClass: function (stat) {
-      if (stat == "SUBMITTED_RPT") {
+      if (stat == "SUBMITTED_RPT" ||
+          stat == "VALID_RPT") {
         return "red"
       } else {
         return "grey"
