@@ -22,7 +22,7 @@
   "dependencies": {
     "aws-case-select": "NMB-dev/aws-case-select#~0.1.0",
     "aws-report": "NMB-dev/aws-report#~0.1.0",
-    "aws-triplegs": "NMB-dev/aws-triplegs#~0.0.1",
+    "aws-triplegs": "NMB-dev/aws-triplegs#~0.1.0",
     "firebase-element": "GoogleWebComponents/firebase-element#^1.0.0",
     "iron-icon": "PolymerElements/iron-icon#^1.0.0",
     "iron-pages": "PolymerElements/iron-pages#^1.0.0",
