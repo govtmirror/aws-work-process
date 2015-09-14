@@ -623,6 +623,7 @@ Example:
         travel_exp: 0,
         per_diem: 0
       };
+      this._selectedArbmonth = newArbmonth;
       var yoURL = this._arbmonthsUrl + "/" + newArbmonth;
       console.log("IN NEWIT, yoUrl = " + yoURL);
       var ref = new Firebase(yoURL);
