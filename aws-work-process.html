@@ -119,19 +119,19 @@ Example:
       padding: 5px;
       color: black;
     }
-    .width75right {
-      width:75px;
+    .width100right {
+      width:100px;
       text-align: right;
     }
     th {
-      background-color: #ccc;
-      color: black;
+      background-color: #aaccff;
+      color: #002255;
     }
     .tdcenter {
       text-align: center;
     }
     tr:nth-child(even) {background: #CCC}
-    tr:nth-child(odd) {background: #FFF}
+    tr:nth-child(odd) {background: #eeeeee}
 
     .submitit {
       background-color: yellow;
@@ -269,36 +269,38 @@ Example:
             <h3>&nbsp;&nbsp;Summary for:&nbsp;<span>{{_computeDisplayDate(_selectedArbmonth)}}</span></h3>
 
             <table>
-              <tr><th></th><th>Request</th><th>Approved</th><th>Actual</th></tr>
+              <tr><th></th><th>Forecast</th><th>Actual</th></tr>
               <tr>
-                <td>Total Case Fees</td>
-                <td class="width75right">$<span>{{_arbmonth.totalfees}}</span></td>
-                <td class="width75right">$<span>{{_arbmonth.totalfees_app}}</span></td>
-                <td class="width75right">$<span>{{_arbmonth.totalfees_act}}</span></td>
+                <td>Write Fees</td>
+                <td class="width100right">$<span>{{_arbmonth.totalfees}}</span></td>
+                <td class="width100right">$<span>{{_arbmonth.totalfees_act}}</span></td>
               </tr>
               <tr>
                 <td>Hearing Fees</td>
-                <td class="width75right">$<span>{{_arbmonth.totalhfees}}</td>
-                <td class="width75right">$<span>{{_arbmonth.totalhfees_app}}</span></td>
-                <td class="width75right">$<span>{{_arbmonth.totalhfees_act}}</span></td>
+                <td class="width100right">$<span>{{_arbmonth.totalhfees}}</td>
+                <td class="width100right">$<span>{{_arbmonth.totalhfees_act}}</span></td>
               </tr>
+            </table><br>
+
+            <table>
+              <tr><th></th><th>Requested</th><th>Approved</th></tr>
               <tr>
                 <td>Travel Expense</td>
-                <td class="width75right">$<span>{{_arbmonth.travel_exp}}</span></td>
-                <td class="width75right">$<span>{{_arbmonth.travel_app}}</span></td>
-                <!-- <td class="width75right">$<span>{{arbmonth.travel_act}}</span></td> -->
+                <td class="width100right">$<span>{{_arbmonth.travel_exp}}</span></td>
+                <td class="width100right">$<span>{{_arbmonth.travel_app}}</span></td>
+                <!-- <td class="width100right">$<span>{{arbmonth.travel_act}}</span></td> -->
               </tr>
               <tr>
                 <td>Lodging</td>
-                <td class="width75right">$<span>{{_arbmonth.lodging_exp}}</span></td>
-                <td class="width75right">$<span>{{_arbmonth.lodging_app}}</span></td>
-                <!-- <td class="width75right">$<span>{{arbmonth.lodging_act}}</span></td> -->
+                <td class="width100right">$<span>{{_arbmonth.lodging_exp}}</span></td>
+                <td class="width100right">$<span>{{_arbmonth.lodging_app}}</span></td>
+                <!-- <td class="width100right">$<span>{{arbmonth.lodging_act}}</span></td> -->
               </tr>
               <tr>
                 <td>Incidentals</td>
-                <td class="width75right">$<span>{{_arbmonth.incidental_exp}}</span></td>
-                <td class="width75right">$<span>{{_arbmonth.incidental_app}}</span></td>
-                <!-- <td class="width75right">$<span>{{arbmonth.incidental_act}}</span></td> -->
+                <td class="width100right">$<span>{{_arbmonth.incidental_exp}}</span></td>
+                <td class="width100right">$<span>{{_arbmonth.incidental_app}}</span></td>
+                <!-- <td class="width100right">$<span>{{arbmonth.incidental_act}}</span></td> -->
               </tr>
             </table>
           </div>
@@ -660,16 +662,16 @@ Example:
     ready: function () {
       console.log("in ready");
       this.addEventListener("case-select-write", function(e) {
-        alert("write event, " + e.detail.caseID + ", " + e.detail.checked);
+        this.calcSummary();
       });
       this.addEventListener("date-heard", function(e) {
-        alert("dateHeard event, " + e.detail.caseID + ", " + e.detail.date);
+        this.calcSummary();
       });
       this.addEventListener("date-written", function(e) {
-        alert("dateWritten event, " + e.detail.caseID + ", " + e.detail.date);
+        this.calcSummary();
       });
       this.addEventListener("tripleg-change", function(e) {
-        alert("tripleg event, " + e.detail.arbmonthId );
+        this.calcSummary();
       });
     },
 
@@ -791,10 +793,13 @@ Example:
     },
 
     calcSummary: function () {
+      console.log("in calcSummary")
       if (this._arbmonth) {
-        var calcTotalFees = 0;
+        console.log("in calcSummary 2")
+        
         var calcTotalHearingFees = 0;
         for (var a in this._assignments) {
+          console.log("in calcSummary 3")
           if (this._assignments[a].heard && 
               (this._assignments[a].hearsched == this._arbmonth.arbMonthID)) {
             if (this._assignments[a].hfee) {
@@ -804,22 +809,38 @@ Example:
             }
           }
         }
-        // for (var a in this.assignmentsWrite) {
-        //   if (this.assignmentsWrite[a].written && 
-        //       this.assignmentsWrite[a].writesched == this.arbmonth.arbMonthID) {
-        //     calcTotalFees = calcTotalFees + parseInt(this.assignmentsWrite[a].fee);
-        //   }
-        // }
+        var calcTotalFees = 0;
+        for (var a in this._assignments) {
+          console.log("in calcwrite loop");
+          if (this._assignments[a].written) {
+            var longIntDate = parseInt(this._assignments[a].written);
+            var wDate = new Date(longIntDate);
+            var writeMonthStr = "" + wDate.getFullYear() + "-"; 
+            var tempMonth = wDate.getMonth() + 1;
+            if (tempMonth < 10 ) {
+              writeMonthStr = writeMonthStr + "0" + tempMonth;
+            } else {
+              writeMonthStr = writeMonthStr + tempMonth;
+            }
+            console.log("YO  + " + writeMonthStr + ", " + this._arbmonth.arbMonthID);
+            if (writeMonthStr == this._arbmonth.arbMonthID) {
+              calcTotalFees = calcTotalFees + parseInt(this._assignments[a].fee);
+            }
+            
+          }
+        }
         // alert("totals, hear = " + calcTotalHearingFees + ", trav = " + calcTotalNumberOfTrav +
          // ", write = " + calcTotalFees);
-        var upURL = this.arbmonthsURL + "/" + this.arbmonth.arbMonthID;
+        console.log("in calcSummary 3.5 " + this._arbmonthsUrl);
+        var upURL = this._arbmonthsUrl + "/" + this._arbmonth.arbMonthID;
         var ref = new Firebase(upURL);
+        console.log("in calcSummary 4")
         var param = {
           "totalfees_act" : calcTotalFees,
           "totalhfees_act" : calcTotalHearingFees
         }
         ref.update(param);
-        this._getDisplayArbmonth()
+        console.log("in calcSummary 6")
       }
     }
 
