@@ -659,6 +659,18 @@ Example:
 // Element Lifecycle
     ready: function () {
       console.log("in ready");
+      this.addEventListener("case-select-write", function(e) {
+        alert("write event, " + e.detail.caseID + ", " + e.detail.checked);
+      });
+      this.addEventListener("date-heard", function(e) {
+        alert("dateHeard event, " + e.detail.caseID + ", " + e.detail.date);
+      });
+      this.addEventListener("date-written", function(e) {
+        alert("dateWritten event, " + e.detail.caseID + ", " + e.detail.date);
+      });
+      this.addEventListener("tripleg-change", function(e) {
+        alert("tripleg event, " + e.detail.arbmonthId );
+      });
     },
 
     attached: function () {
@@ -775,6 +787,39 @@ Example:
           this._navIndex = 6;
           this._formIndex = 7;
           break;
+      }
+    },
+
+    calcSummary: function () {
+      if (this._arbmonth) {
+        var calcTotalFees = 0;
+        var calcTotalHearingFees = 0;
+        for (var a in this._assignments) {
+          if (this._assignments[a].heard && 
+              (this._assignments[a].hearsched == this._arbmonth.arbMonthID)) {
+            if (this._assignments[a].hfee) {
+              calcTotalHearingFees = calcTotalHearingFees + this._assignments[a].hfee;
+            } else {
+              calcTotalHearingFees = calcTotalHearingFees + 30;
+            }
+          }
+        }
+        // for (var a in this.assignmentsWrite) {
+        //   if (this.assignmentsWrite[a].written && 
+        //       this.assignmentsWrite[a].writesched == this.arbmonth.arbMonthID) {
+        //     calcTotalFees = calcTotalFees + parseInt(this.assignmentsWrite[a].fee);
+        //   }
+        // }
+        // alert("totals, hear = " + calcTotalHearingFees + ", trav = " + calcTotalNumberOfTrav +
+         // ", write = " + calcTotalFees);
+        var upURL = this.arbmonthsURL + "/" + this.arbmonth.arbMonthID;
+        var ref = new Firebase(upURL);
+        var param = {
+          "totalfees_act" : calcTotalFees,
+          "totalhfees_act" : calcTotalHearingFees
+        }
+        ref.update(param);
+        this._getDisplayArbmonth()
       }
     }
 
