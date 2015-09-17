@@ -653,6 +653,7 @@ Example:
     _selectarbmonthChg: function(ab) {
       console.log("in goc damn function");
       this._monthUrl = this._arbmonthsUrl + "/" + this._selectedArbmonth
+      this.calcSummary();
       console.log("in goc damn function 2 " + this._formIndex);
     },
 
@@ -809,6 +810,20 @@ Example:
             }
           }
         }
+
+        var calcTotalHearSched = 0;
+        for (var a in this._assignments) {
+          console.log("in calcSummary 3 .1")
+          if (this._assignments[a].hearsched == this._arbmonth.arbMonthID) {
+            if (this._assignments[a].hfee) {
+              calcTotalHearSched = calcTotalHearSched + this._assignments[a].hfee;
+            } else {
+              calcTotalHearSched = calcTotalHearSched + 30;
+            }
+          }
+        }
+
+
         var calcTotalFees = 0;
         for (var a in this._assignments) {
           console.log("in calcwrite loop");
@@ -822,13 +837,59 @@ Example:
             } else {
               writeMonthStr = writeMonthStr + tempMonth;
             }
-            console.log("YO  + " + writeMonthStr + ", " + this._arbmonth.arbMonthID);
+            console.log("in calcsummary 3.25  + " + writeMonthStr + ", " + this._arbmonth.arbMonthID);
             if (writeMonthStr == this._arbmonth.arbMonthID) {
               calcTotalFees = calcTotalFees + parseInt(this._assignments[a].fee);
-            }
-            
+            } 
           }
         }
+
+        var calcTotalReqFees = 0;
+        for (var a in this._assignments) {
+          console.log("in calcwrite loop 2.2 ");
+          if (this._assignments[a].writesched) {
+            
+            console.log("in calcsummary 3.255  + " + this._assignments[a].writesched + ", " + this._arbmonth.arbMonthID);
+            if (this._assignments[a].writesched == this._arbmonth.arbMonthID) {
+              calcTotalReqFees = calcTotalReqFees + parseInt(this._assignments[a].fee);
+            } 
+          }
+        }
+
+
+        var totTrvEst = 0;
+        var totTrvApp = 0;
+        var totLodgeEst = 0;
+        var totLodgeApp = 0;
+        var totIncEst = 0;
+        var totIncApp = 0;
+        console.log("before the loop for arbmonth calc");
+        var tripKeys = Object.keys(this._arbmonth.triplegs);
+        for (var b in tripKeys) {
+          console.log("in the loop for arbmonth calc " + b + ", " + tripKeys[b]);
+          console.log("yoho " + this._arbmonth.triplegs[tripKeys[b]].travCostEst)
+          if (this._arbmonth.triplegs[tripKeys[b]].travCostEst) {
+            totTrvEst = totTrvEst + parseInt(this._arbmonth.triplegs[tripKeys[b]].travCostEst);
+          }
+          if (this._arbmonth.triplegs[tripKeys[b]].travCostApp) {
+            totTrvApp = totTrvApp + parseInt(this._arbmonth.triplegs[tripKeys[b]].travCostApp);
+          }
+          if (this._arbmonth.triplegs[tripKeys[b]].lodgingCostEst) {
+            totLodgeEst = totLodgeEst + parseInt(this._arbmonth.triplegs[tripKeys[b]].lodgingCostEst);
+          }
+          if (this._arbmonth.triplegs[tripKeys[b]].lodgingCostApp) {
+            totLodgeApp = totLodgeApp + parseInt(this._arbmonth.triplegs[tripKeys[b]].lodgingCostApp);
+          }
+          if (this._arbmonth.triplegs[tripKeys[b]].incidentalCostEst) {
+            totIncEst = totIncEst + parseInt(this._arbmonth.triplegs[tripKeys[b]].incidentalCostEst);
+          }
+          if (this._arbmonth.triplegs[tripKeys[b]].incidentalCostApp) {
+            totIncApp = totIncApp + parseInt(this._arbmonth.triplegs[tripKeys[b]].incidentalCostApp);
+          }
+        }
+        console.log("after the loop for arbmonth calc " + totTrvEst);
+
+
         // alert("totals, hear = " + calcTotalHearingFees + ", trav = " + calcTotalNumberOfTrav +
          // ", write = " + calcTotalFees);
         console.log("in calcSummary 3.5 " + this._arbmonthsUrl);
@@ -837,7 +898,16 @@ Example:
         console.log("in calcSummary 4")
         var param = {
           "totalfees_act" : calcTotalFees,
-          "totalhfees_act" : calcTotalHearingFees
+          "totalfees" : calcTotalReqFees,
+          "totalhfees_act" : calcTotalHearingFees,
+          "totalhfees" : calcTotalHearSched,
+          "travel_exp" : totTrvEst,
+          "travel_app" : totTrvApp,
+          "lodging_exp" : totLodgeEst,
+          "lodging_app" : totLodgeApp,
+          "incidental_exp" : totIncEst,
+          "incidental_app" : totIncApp
+
         }
         ref.update(param);
         console.log("in calcSummary 6")
