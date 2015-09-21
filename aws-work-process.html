@@ -269,18 +269,24 @@ Example:
             <h3>&nbsp;&nbsp;Summary for:&nbsp;<span>{{_computeDisplayDate(_selectedArbmonth)}}</span></h3>
 
             <table>
+              <tr><th></th><th>Requested</th><th>Approved</th><th>Actual</th></tr>
+              <tr>
+                <td>Hearing Fees</td>
+                <td class="width100right">$<span>{{_arbmonth.totalhfees}}</td>
+                <td class="width100right">$<span>{{_arbmonth.totalhfees_app}}</td>
+                <td class="width100right">$<span>{{_arbmonth.totalhfees_act}}</span></td>
+              </tr>
+            </table><br>
+
+            <table>
               <tr><th></th><th>Forecast</th><th>Actual</th></tr>
               <tr>
                 <td>Write Fees</td>
                 <td class="width100right">$<span>{{_arbmonth.totalfees}}</span></td>
                 <td class="width100right">$<span>{{_arbmonth.totalfees_act}}</span></td>
               </tr>
-              <tr>
-                <td>Hearing Fees</td>
-                <td class="width100right">$<span>{{_arbmonth.totalhfees}}</td>
-                <td class="width100right">$<span>{{_arbmonth.totalhfees_act}}</span></td>
-              </tr>
             </table><br>
+
 
             <table>
               <tr><th></th><th>Requested</th><th>Approved</th></tr>
@@ -811,6 +817,19 @@ Example:
           }
         }
 
+        var calcTotalHearApp = 0;
+        for (var a in this._assignments) {
+          console.log("in calcSummary 3 .05")
+          if (this._assignments[a].hear_app && 
+              (this._assignments[a].hearsched == this._arbmonth.arbMonthID)) {
+            if (this._assignments[a].hfee) {
+              calcTotalHearApp = calcTotalHearApp + this._assignments[a].hfee;
+            } else {
+              calcTotalHearApp = calcTotalHearApp + 30;
+            }
+          }
+        }
+
         var calcTotalHearSched = 0;
         for (var a in this._assignments) {
           console.log("in calcSummary 3 .1")
@@ -900,6 +919,7 @@ Example:
           "totalfees_act" : calcTotalFees,
           "totalfees" : calcTotalReqFees,
           "totalhfees_act" : calcTotalHearingFees,
+          "totalhfees_app" : calcTotalHearApp,
           "totalhfees" : calcTotalHearSched,
           "travel_exp" : totTrvEst,
           "travel_app" : totTrvApp,
