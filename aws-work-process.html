@@ -573,7 +573,7 @@ Example:
         console.log("in _doArbmonthDelete x");
         this.$.arbmonths_fb.removeByKey(this._arbmonth.arbMonthID);
         console.log("in _doArbmonthDelete y");
-        this._arbmonth = null;
+        this._arbmonth = null; // should this be the url = null?
         this._selectedArbmonth = null;
       } else {
         alert("To DELETE, a month must be \"PENDING_REQ\"");
