@@ -166,6 +166,10 @@ Example:
         location="{{_monthUrl}}"
         data="{{_arbmonth}}">
     </firebase-document>
+    <firebase-document
+        location="{{_usernameUrl}}"
+        data="{{_displayName}}">
+    </firebase-document>
     <firebase-collection
         id="assignments_fb"
         location="{{_assignmentsUrl}}"
@@ -460,6 +464,8 @@ Example:
       },
 
       _monthUrl: String,
+      _usernameUrl: String,
+      _displayName: String,
       _arbmonth: Object,
       _navHidden: {
         type: Boolean,
@@ -572,9 +578,11 @@ Example:
 
         console.log("in _doArbmonthDelete x");
         this.$.arbmonths_fb.removeByKey(this._arbmonth.arbMonthID);
-        console.log("in _doArbmonthDelete y");
+        console.log("in _doArbmonthDelete y, " + this._selectedArbmonth);
+        this._deleteAmstat(this._selectedArbmonth);
         this._arbmonth = null; // should this be the url = null?
         this._selectedArbmonth = null;
+
       } else {
         alert("To DELETE, a month must be \"PENDING_REQ\"");
       }
@@ -636,6 +644,10 @@ Example:
       console.log("IN NEWIT, yoUrl = " + yoURL);
       var ref = new Firebase(yoURL);
       ref.set(params);
+
+      this._setAmstat(newArbmonth,"PENDING_REQ");
+
+      
     },
 
     _travelit: function () {
@@ -693,6 +705,7 @@ Example:
     _assembleUrls: function () {
       this._arbmonthsUrl = this.fbUrl + "/users/" + this.userUid + "/arbmonths";
       this._assignmentsUrl = this.fbUrl + "/users/" + this.userUid + "/assignments";
+      this._usernameUrl = this.fbUrl + "/users/" + this.userUid + "/name";
       console.log("in assembleUrls, 2 " + this._arbmonthsUrl + ", " + this._assignmentsUrl);
     },
 
@@ -932,6 +945,29 @@ Example:
         ref.update(param);
         console.log("in calcSummary 6")
       }
+    },
+
+    _setAmstat: function (am,stat) {
+      console.log("in _setAmstat, setting amstat");
+      var amstatKey = am + "-" + this.userUid;
+      var amstatparams = {
+        arbMonthID: am,
+        arbuid: this.userUid,
+        displayName: this._displayName,
+        stat: stat
+      }
+      console.log("leaving in _setAmstat, " + amstatparams.displayName);
+      var yohoURL = this.fbUrl + "/amstat/" + amstatKey;
+      console.log("in _setAmstat, yohoUrl = " + yohoURL);
+      var ref2 = new Firebase(yohoURL);
+      ref2.set(amstatparams);
+    },
+
+    _deleteAmstat: function (am) {
+      var amstatKey = am + "-" + this.userUid;
+      var yohoURL = this.fbUrl + "/amstat/" + amstatKey;
+      var ref2 = new Firebase(yohoURL);
+      ref2.set(null);
     }
 
 
