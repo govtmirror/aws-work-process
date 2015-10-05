@@ -521,10 +521,13 @@ Example:
         var reqRef = new Firebase(reqUrl);
         var param = {'stat':'SUBMITTED_REQ'};
         reqRef.update(param);
+        this._setAmstat(this._selectedArbmonth, 'SUBMITTED_REQ');
+        this._emailRequest('SUBMITTED_REQ');
         console.log("end of road")
       } else {
         console.log("failed to submit");
       }
+
     },
 
     _submitRpt: function () {
@@ -537,6 +540,8 @@ Example:
         var reqRef = new Firebase(reqUrl);
         var param = {'stat':'SUBMITTED_RPT'};
         reqRef.update(param);
+        this._setAmstat(this._selectedArbmonth, 'SUBMITTED_RPT');
+        this._emailRequest('SUBMITTED_RPT');
         console.log("end of road")
       } else {
         console.log("failed to submit");
@@ -968,6 +973,20 @@ Example:
       var yohoURL = this.fbUrl + "/amstat/" + amstatKey;
       var ref2 = new Firebase(yohoURL);
       ref2.set(null);
+    },
+
+    _emailRequest: function (type) {
+      var params = {
+        arbuid: this.userUid,
+        type: type,
+        stamp: parseInt(Date.now()),
+        pending: true
+      }
+      console.log("in email, " + params.stamp);
+      var yoURL = this.fbUrl + "/email";
+      console.log("in _emailRequest, yoUrl = " + yoURL);
+      var ref2 = new Firebase(yoURL);
+      ref2.push(params);
     }
 
 
