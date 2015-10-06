@@ -273,16 +273,6 @@ Example:
             <h3>&nbsp;&nbsp;Summary for:&nbsp;<span>{{_computeDisplayDate(_selectedArbmonth)}}</span></h3>
 
             <table>
-              <tr><th></th><th>Requested</th><th>Approved</th><th>Actual</th></tr>
-              <tr>
-                <td>Hearing Fees</td>
-                <td class="width100right">$<span>{{_arbmonth.totalhfees}}</td>
-                <td class="width100right">$<span>{{_arbmonth.totalhfees_app}}</td>
-                <td class="width100right">$<span>{{_arbmonth.totalhfees_act}}</span></td>
-              </tr>
-            </table><br>
-
-            <table>
               <tr><th></th><th>Forecast</th><th>Actual</th></tr>
               <tr>
                 <td>Write Fees</td>
@@ -291,6 +281,14 @@ Example:
               </tr>
             </table><br>
 
+            <table>
+              <tr><th></th><th>Requested</th><th>Actual</th></tr>
+              <tr>
+                <td>Hearing Fees</td>
+                <td class="width100right">$<span>{{_arbmonth.totalhfees}}</td>
+                <td class="width100right">$<span>{{_arbmonth.totalhfees_act}}</span></td>
+              </tr>
+            </table><br>
 
             <table>
               <tr><th></th><th>Requested</th><th>Approved</th></tr>
@@ -901,7 +899,10 @@ Example:
         var totIncEst = 0;
         var totIncApp = 0;
         console.log("before the loop for arbmonth calc");
-        var tripKeys = Object.keys(this._arbmonth.triplegs);
+        var tripKeys = [];
+        if (this._arbmonth.triplegs) {
+          var tripKeys = Object.keys(this._arbmonth.triplegs);
+        }
         for (var b in tripKeys) {
           console.log("in the loop for arbmonth calc " + b + ", " + tripKeys[b]);
           console.log("yoho " + this._arbmonth.triplegs[tripKeys[b]].travCostEst)
