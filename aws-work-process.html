@@ -526,6 +526,8 @@ Example:
         console.log("failed to submit");
       }
 
+      this._logEntry(this._arbmonth.arbMonthID, "Request submitted to staff.");
+
     },
 
     _submitRpt: function () {
@@ -544,6 +546,9 @@ Example:
       } else {
         console.log("failed to submit");
       }
+
+      this._logEntry(this._arbmonth.arbMonthID, "Report submitted to staff.");
+
     },
 
     _deleteit: function () {
@@ -627,10 +632,12 @@ Example:
       }
       this.$.newdialog.open();
     },
+
     _selectNewArbmonth: function (e) {
       console.log("in _selectNewArbmonth, " + JSON.stringify(e.target.value));
       this._selectorMonth = e.target.value;
     },
+
     _doNewMonth: function () {
       console.log("in _doNewMonth, " + this._selectorMonth);
       var newArbmonth = this._selectorMonth;
@@ -649,6 +656,8 @@ Example:
       ref.set(params);
 
       this._setAmstat(newArbmonth,"PENDING_REQ");
+
+      this._logEntry(newArbmonth, "New Arbmonth Created.");
 
       
     },
@@ -988,6 +997,18 @@ Example:
       console.log("in _emailRequest, yoUrl = " + yoURL);
       var ref2 = new Firebase(yoURL);
       ref2.push(params);
+    },
+
+    _logEntry: function (arbMonthID, message) {
+      var timestamp = parseInt(Date.now());
+      var logUrl = this._arbmonthsUrl + "/" + arbMonthID + "/log/" + timestamp;
+      var params = {
+        name: this._displayName,
+        stamp: timestamp,
+        entry: message
+      }
+      var ref = new Firebase(logUrl);
+      ref.set(params);
     }
 
 
