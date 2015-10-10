@@ -567,18 +567,18 @@ Example:
 
             var ref5 = new Firebase(deleteStuffUrl);
 
-            if (this._assignments[a].hearsched == toDeleteArbmonthKey) {
-              var param = {'hearsched':null};
-              ref5.update(param);
-            }
+            // if (this._assignments[a].hearsched == toDeleteArbmonthKey) {
+            //   var param = {'hearsched':null};
+            //   ref5.update(param);
+            // }
             if (this._assignments[a].travsched == toDeleteArbmonthKey) {
               var param = {'travsched':null,'tripID':null};
               ref5.update(param);
             }
-            if (this._assignments[a].writesched == toDeleteArbmonthKey) {
-              var param = {'writesched':null};
-              ref5.update(param);
-            }
+            // if (this._assignments[a].writesched == toDeleteArbmonthKey) {
+            //   var param = {'writesched':null};
+            //   ref5.update(param);
+            // }
           }
         } else {
           console.log("in _doArbmonthDelete z");
