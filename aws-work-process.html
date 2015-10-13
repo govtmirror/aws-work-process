@@ -835,7 +835,7 @@ Example:
           if (this._assignments[a].heard && 
               (this._assignments[a].hearsched == this._arbmonth.arbMonthID)) {
             if (this._assignments[a].hfee) {
-              calcTotalHearingFees = calcTotalHearingFees + this._assignments[a].hfee;
+              calcTotalHearingFees = calcTotalHearingFees + parseInt(this._assignments[a].hfee);
             } else {
               calcTotalHearingFees = calcTotalHearingFees + 30;
             }
@@ -848,7 +848,7 @@ Example:
           if (this._assignments[a].hear_app && 
               (this._assignments[a].hearsched == this._arbmonth.arbMonthID)) {
             if (this._assignments[a].hfee) {
-              calcTotalHearApp = calcTotalHearApp + this._assignments[a].hfee;
+              calcTotalHearApp = calcTotalHearApp + parseInt(this._assignments[a].hfee);
             } else {
               calcTotalHearApp = calcTotalHearApp + 30;
             }
@@ -860,7 +860,7 @@ Example:
           console.log("in calcSummary 3 .1")
           if (this._assignments[a].hearsched == this._arbmonth.arbMonthID) {
             if (this._assignments[a].hfee) {
-              calcTotalHearSched = calcTotalHearSched + this._assignments[a].hfee;
+              calcTotalHearSched = calcTotalHearSched + parseInt(this._assignments[a].hfee);
             } else {
               calcTotalHearSched = calcTotalHearSched + 30;
             }
