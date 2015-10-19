@@ -16,6 +16,7 @@ Copyright (c) 2015 dean wagner wagner@nmb.gov. All rights reserved.
 <link rel="import" href="../aws-case-select/aws-case-select.html">
 <link rel="import" href="../aws-report/aws-report.html">
 <link rel="import" href="../aws-triplegs/aws-triplegs.html">
+<link rel="import" href="../aws-report-detail/aws-report-detail.html">
 <!-- <link rel="import" href="../bower_components/firebase-element/firebase-document.html"> -->
 
 <!--
@@ -403,6 +404,13 @@ Example:
             selected-arbmonth="{{_arbmonth.arbMonthID}}">
         </aws-report>
       </div>  <!-- end of report -->
+      <div>
+        <aws-report-detail
+            fire-db="{{fbUrl}}"
+            user-uid="{{userUid}}"
+            selected-arbmonth="{{_arbmonth.arbMonthID}}">
+        </aws-report-detail>
+      </div>  <!-- end of report detail -->
       <div></div> <!-- end of blank -->
 
 
@@ -794,12 +802,12 @@ Example:
         case "SUBMITTED_REQ":
           this._navHidden = true;
           this._navIndex = 1;
-          this._formIndex = 7;
+          this._formIndex = 3;
           break;
         case "VALID_REQ":
           this._navHidden = true;
           this._navIndex = 2;
-          this._formIndex = 7;
+          this._formIndex = 3;
           break;
         case "REQ_APPROVED":
           this._navHidden = false;
@@ -809,12 +817,12 @@ Example:
         case "SUBMITTED_RPT":
           this._navHidden = true;
           this._navIndex = 4;
-          this._formIndex = 7;
+          this._formIndex = 3;
           break;
         case "VALID_RPT":
           this._navHidden = true;
           this._navIndex = 5;
-          this._formIndex = 7;
+          this._formIndex = 3;
           break;
         default:
           this._navHidden = true;
