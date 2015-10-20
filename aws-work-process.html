@@ -529,6 +529,10 @@ Example:
         reqRef.update(param);
         this._setAmstat(this._selectedArbmonth, 'SUBMITTED_REQ');
         this._emailRequest('SUBMITTED_REQ');
+
+
+        this._setAssignEdit(this._selectedArbmonth,true);
+
         console.log("end of road")
       } else {
         console.log("failed to submit");
@@ -550,6 +554,7 @@ Example:
         reqRef.update(param);
         this._setAmstat(this._selectedArbmonth, 'SUBMITTED_RPT');
         this._emailRequest('SUBMITTED_RPT');
+        this._setAssignEdit(this._selectedArbmonth,true);
         console.log("end of road")
       } else {
         console.log("failed to submit");
@@ -1017,6 +1022,27 @@ Example:
       }
       var ref = new Firebase(logUrl);
       ref.set(params);
+    },
+
+    _setAssignEdit: function (arbMonthID, state) {
+      for (var a = 0; a < this._assignments.length; a++) {
+        var aa = this._assignments[a];
+        if (arbMonthID == aa.writesched) {
+          var assignEditUrl = this._assignmentsUrl + "/" + aa.caseID ;
+          var params = {notWriteEdit: true}
+          var ref = new Firebase(assignEditUrl);
+          ref.update(params);
+          console.log("yo dean in the _setAssignEdit, write " + this._assignments[a].caseID);
+        }
+        if (arbMonthID == aa.hearsched) {
+          var assignEditUrl = this._assignmentsUrl + "/" + aa.caseID ;
+          var params = {notHearEdit: true}
+          var ref = new Firebase(assignEditUrl);
+          ref.update(params);
+          console.log("yo dean in the _setAssignEdit, hear " + this._assignments[a].caseID);
+        }
+        
+      }
     }
 
 
