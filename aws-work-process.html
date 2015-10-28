@@ -1003,7 +1003,8 @@ Example:
         arbuid: this.userUid,
         type: type,
         stamp: parseInt(Date.now()),
-        pending: true
+        pending: true,
+        arbMonthID: this._selectedArbmonth
       }
       console.log("in email, " + params.stamp);
       var yoURL = this.fbUrl + "/email";
