@@ -400,6 +400,7 @@ Example:
       <div>
         <aws-report
             fire-db="{{fbUrl}}"
+            fileservice-url="{{fileserviceUrl}}"
             user-uid="{{userUid}}"
             selected-arbmonth="{{_arbmonth.arbMonthID}}">
         </aws-report>
@@ -494,7 +495,12 @@ Example:
         }
       },
 
-      _selectorMonth: String
+      _selectorMonth: String,
+
+      fileserviceUrl: {
+        type: String,
+        value: ""
+      }
 
 
     },
