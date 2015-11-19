@@ -553,7 +553,31 @@ Example:
     },
     _doSubmitRpt: function () {
       console.log("in _doSubmitRpt");
-      if (this._arbmonth && this._arbmonth.stat == "REQ_APPROVED") {
+
+      var formBad = false;
+      var formMsgHear = "";
+      var formMsgWrite = "";
+
+      for (var h in this._assignments) {
+        if (!this._assignments[h].heard && this._assignments[h].hearsched == this._arbmonth.arbMonthID) {
+          formBad = true;
+          formMsgHear = formMsgHear + " " + this._assignments[h].__firebaseKey__;
+        }
+        if (!(this._assignments[h].written && this._assignments[h].decision && this._assignments[h].awardfile) && this._assignments[h].writesched == this._arbmonth.arbMonthID && !this._assignments[h].notwritten) {
+          formBad = true;
+          formMsgWrite = formMsgWrite + " " + this._assignments[h].__firebaseKey__;
+        }
+      }
+
+      if (formBad) {
+        alert("what the hell, \nyou haven't filled out all the hearing dates for cases " + 
+          formMsgHear + "\nyou haven't completed the information for write cases " + formMsgWrite);
+      }
+     
+
+
+      if (this._arbmonth && this._arbmonth.stat == "REQ_APPROVED" && !formBad) {
+        this.calcSummary();
         var reqUrl = this._arbmonthsUrl + "/" + this._arbmonth.arbMonthID;
         var reqRef = new Firebase(reqUrl);
         var param = {'stat':'SUBMITTED_RPT'};
@@ -900,7 +924,7 @@ Example:
             } else {
               writeMonthStr = writeMonthStr + tempMonth;
             }
-            console.log("in calcsummary 3.25  + " + writeMonthStr + ", " + this._arbmonth.arbMonthID);
+            console.log("in calcSummary 3.25  + " + writeMonthStr + ", " + this._arbmonth.arbMonthID);
             if (writeMonthStr == this._arbmonth.arbMonthID) {
               calcTotalFees = calcTotalFees + parseInt(this._assignments[a].fee);
             } 
@@ -912,7 +936,7 @@ Example:
           console.log("in calcwrite loop 2.2 ");
           if (this._assignments[a].writesched) {
             
-            console.log("in calcsummary 3.255  + " + this._assignments[a].writesched + ", " + this._arbmonth.arbMonthID);
+            console.log("in calcSummary 3.255  + " + this._assignments[a].writesched + ", " + this._arbmonth.arbMonthID);
             if (this._assignments[a].writesched == this._arbmonth.arbMonthID) {
               calcTotalReqFees = calcTotalReqFees + parseInt(this._assignments[a].fee);
             } 
