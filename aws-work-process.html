@@ -194,17 +194,19 @@ Example:
       </div>
     </paper-dialog>
     <paper-dialog id="subRptdialog" modal class="paper-date-picker-dialog">
-      <h3>report</h3>
+      <h3>Submitting this report disables modification of the report unless the Arbitration staff returns it to you.</h3>
+      <div>Click on cancel to return to the form.</div>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm on-tap="_doSubmitRpt">OK</paper-button>
+        <paper-button dialog-confirm on-tap="_doSubmitRpt">Submit</paper-button>
       </div>
     </paper-dialog>
     <paper-dialog id="subReqdialog" modal class="paper-date-picker-dialog">
-      <h3>request</h3>
+      <h3>Submitting this request disables modification of the report unless the Arbitration staff returns it to you.</h3>
+      <div>Click on cancel to return to the form.</div>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm on-tap="_doSubmitReq">OK</paper-button>
+        <paper-button dialog-confirm on-tap="_doSubmitReq">Submit</paper-button>
       </div>
     </paper-dialog>
     <paper-dialog id="deletedialog" modal class="paper-date-picker-dialog">
@@ -528,7 +530,9 @@ Example:
     },
     _doSubmitReq: function () {
       console.log("in _doSubmitReq");
+
       if (this._arbmonth && this._arbmonth.stat == "PENDING_REQ") {
+        this.calcSummary();
         var reqUrl = this._arbmonthsUrl + "/" + this._arbmonth.arbMonthID;
         var reqRef = new Firebase(reqUrl);
         var param = {'stat':'SUBMITTED_REQ'};
@@ -563,6 +567,7 @@ Example:
           formBad = true;
           formMsgHear = formMsgHear + " " + this._assignments[h].__firebaseKey__;
         }
+
         if (!(this._assignments[h].written && this._assignments[h].decision && this._assignments[h].awardfile) && this._assignments[h].writesched == this._arbmonth.arbMonthID && !this._assignments[h].notwritten) {
           formBad = true;
           formMsgWrite = formMsgWrite + " " + this._assignments[h].__firebaseKey__;
@@ -570,8 +575,8 @@ Example:
       }
 
       if (formBad) {
-        alert("what the hell, \nyou haven't filled out all the hearing dates for cases " + 
-          formMsgHear + "\nyou haven't completed the information for write cases " + formMsgWrite);
+        alert("You haven't filled out all the hearing dates for cases \n" + 
+          formMsgHear + "\n\nYou haven't completed the information for write cases \n" + formMsgWrite);
       }
      
 
