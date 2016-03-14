@@ -537,7 +537,7 @@ Example:
         var reqRef = new Firebase(reqUrl);
         var param = {'stat':'SUBMITTED_REQ'};
         reqRef.update(param);
-        this._setAmstat(this._selectedArbmonth, 'SUBMITTED_REQ');
+        this._updateAmstat(this._selectedArbmonth, 'SUBMITTED_REQ');
         this._emailRequest('SUBMITTED_REQ');
 
 
@@ -587,7 +587,7 @@ Example:
         var reqRef = new Firebase(reqUrl);
         var param = {'stat':'SUBMITTED_RPT'};
         reqRef.update(param);
-        this._setAmstat(this._selectedArbmonth, 'SUBMITTED_RPT');
+        this._updateAmstat(this._selectedArbmonth, 'SUBMITTED_RPT');
         this._emailRequest('SUBMITTED_RPT');
         this._setAssignEdit(this._selectedArbmonth,true);
         console.log("end of road")
@@ -1017,11 +1017,27 @@ Example:
       console.log("in _setAmstat, setting amstat");
       var amstatKey = am + "-" + this.userUid;
       var amstatparams = {
+        arbMonthID: am,
+        arbuid: this.userUid,
+        displayName: this._displayName,
         stat: stat
       }
       console.log("leaving in _setAmstat, " + amstatparams.displayName);
       var yohoURL = this.fbUrl + "/amstat/" + amstatKey;
       console.log("in _setAmstat, yohoUrl = " + yohoURL);
+      var ref2 = new Firebase(yohoURL);
+      ref2.set(amstatparams);
+    },
+
+    _updateAmstat: function (am,stat) {
+      console.log("in _updateAmstat, setting amstat");
+      var amstatKey = am + "-" + this.userUid;
+      var amstatparams = {
+        stat: stat
+      }
+      console.log("leaving in _updateAmstat, " + amstatparams.displayName);
+      var yohoURL = this.fbUrl + "/amstat/" + amstatKey;
+      console.log("in _updateAmstat, yohoUrl = " + yohoURL);
       var ref2 = new Firebase(yohoURL);
       ref2.update(amstatparams);
     },
