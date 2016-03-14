@@ -1017,16 +1017,13 @@ Example:
       console.log("in _setAmstat, setting amstat");
       var amstatKey = am + "-" + this.userUid;
       var amstatparams = {
-        arbMonthID: am,
-        arbuid: this.userUid,
-        displayName: this._displayName,
         stat: stat
       }
       console.log("leaving in _setAmstat, " + amstatparams.displayName);
       var yohoURL = this.fbUrl + "/amstat/" + amstatKey;
       console.log("in _setAmstat, yohoUrl = " + yohoURL);
       var ref2 = new Firebase(yohoURL);
-      ref2.set(amstatparams);
+      ref2.update(amstatparams);
     },
 
     _deleteAmstat: function (am) {
